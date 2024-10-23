@@ -10,12 +10,13 @@
 
 #### 2. 产品表 (products)
 
-| 列名        | 数据类型       | 约束                                   |
-| ----------- | -------------- | -------------------------------------- |
+| 列名          | 数据类型           | 约束                                |
+|-------------|----------------|----------------------------------------|
 | id          | INT            | AUTO_INCREMENT, PRIMARY KEY            |
 | name        | VARCHAR(255)   | NOT NULL                               |
 | description | TEXT           |                                        |
 | price       | DECIMAL(10, 2) | NOT NULL                               |
+| stock       | INT            | NOT NULL                               |
 | seller_id   | INT            | FOREIGN KEY (references users.id)      |
 | category_id | INT            | FOREIGN KEY (references categories.id) |
 
@@ -58,8 +59,6 @@
 | id             | INT                                                 | AUTO_INCREMENT, PRIMARY KEY       |
 | buyer_id       | INT                                                 | FOREIGN KEY (references users.id) |
 | order_date     | DATETIME                                            | NOT NULL                          |
-| status         | ENUM('pending', 'shipped', 'completed', 'canceled') | DEFAULT 'pending'                 |
-| total_amount   | DECIMAL(10, 2)                                      | NOT NULL                          |
 | status         | ENUM('pending', 'shipped', 'completed', 'canceled') | DEFAULT 'pending'                 |
 | total_amount   | DECIMAL(10, 2)                                      | NOT NULL                          |
 | recipient_name | VARCHAR(255)                                        | NOT NULL                          |

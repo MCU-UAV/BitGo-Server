@@ -37,19 +37,41 @@ def get_product(db: Session, product_id: int):
 
 
 def create_product(db: Session, product: schemas.ProductCreate):
-    db_product = models.Product(**product.dict())
+    # 创建产品本身
+    db_product = models.Product(
+        name=product.name,
+        description=product.description,
+        price=product.price,
+        stock=product.stock,
+        seller_id=product.seller_id,
+        category_id=product.category_id
+    )
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
+
+    # 保存多个图片 URL 到 ProductImage
+    for image_url in product.image_urls:
+        db_image = models.ProductImage(product_id=db_product.id, image_url=image_url)
+        db.add(db_image)
+
+    db.commit()
     return db_product
 
 
-def get_products(db: Session, skip: int = 0, limit: int = 10):
-    return db.query(models.Product).offset(skip).limit(limit).all()
+# 根据ID获取单个商品
+def get_product_by_id(db: Session, product_id: int):
+    return db.query(models.Product).filter(models.Product.id == product_id).first()
+
+def get_product_images_by_product_id(db: Session, product_id: int):
+    return db.query(models.ProductImage).filter(models.ProductImage.product_id == product_id).all()
 
 
 def get_products_by_seller(db: Session, seller_id: int):
     return db.query(models.Product).filter(models.Product.seller_id == seller_id).all()
+
+def get_category_name_by_id(db: Session, category_id: int):
+    return db.query(models.Category).filter(models.Category.id == category_id).first()
 
 
 # 订单相关操作

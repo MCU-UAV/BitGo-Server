@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from datetime import timedelta
-
+from typing import List
 import crud, models, schemas, auth
 from database import get_db, engine
 
@@ -61,12 +61,52 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
 
 
 # 获取当前用户信息
-@app.get("/users/me/", response_model=schemas.User)
+@app.get("/users/me")
 async def read_users_me(current_user: schemas.User = Depends(auth.get_current_user)):
-	return current_user
+	return {"username": current_user.username, "user_id": current_user.id}
 
 
 # 测试登录保护的数据
 @app.get("/protected")
 async def read_protected_data(current_user: schemas.User = Depends(auth.get_current_user)):
 	return {"message": "这是受保护的数据", "user": current_user.username}
+
+
+@app.post("/product/create")
+def create_new_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
+	try:
+		# 调用 CRUD 函数创建产品
+		db_product = crud.create_product(db, product)
+		return {
+			"success": True,
+			"product": db_product.name,
+			"message": "产品发布成功"
+		}
+	except Exception as e:
+		# 捕获异常并返回错误信息
+		raise HTTPException(status_code=500, detail=f"产品发布失败: {str(e)}")
+
+
+# 获取商品详情
+@app.get("/products/{product_id}/detail", response_model=schemas.Product)
+def read_product(product_id: int, db: Session = Depends(get_db)):
+	product = crud.get_product_by_id(db, product_id)
+	if product is None:
+		raise HTTPException(status_code=404, detail="Product not found")
+	return product
+
+# 获取商品图片
+@app.get("/products/{product_id}/image", response_model=List[schemas.ProductImage])
+def read_product(product_id: int, db: Session = Depends(get_db)):
+	product_images = crud.get_product_images_by_product_id(db, product_id)
+	if not product_images:
+		raise HTTPException(status_code=404, detail="Product images not found")
+	return product_images
+
+#获取商品分类名
+@app.get("/categories/{category_id}/name")
+async def read_category_name(category_id: int, db: Session = Depends(get_db)):
+	category = crud.get_category_name_by_id(db, category_id)
+	if not category:
+		raise HTTPException(status_code=404, detail="Category not found")
+	return category

@@ -34,3 +34,4 @@ async def test_get_user_info():
         print(response.content)
         assert response.status_code == 200
         assert response.json()["username"] == "testuser"
+

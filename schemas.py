@@ -30,18 +30,19 @@ class ProductCreate(BaseModel):
 	name: str
 	description: Optional[str] = None
 	price: float
+	stock: int
 	seller_id: int
 	category_id: int
-
+	image_urls: List[str]
 
 class Product(BaseModel):
 	id: int
 	name: str
 	description: Optional[str] = None
 	price: float
+	stock: int
 	seller_id: int
 	category_id: int
-
 	class Config:
 		from_attributes = True
 

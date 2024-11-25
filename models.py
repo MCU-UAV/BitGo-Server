@@ -12,11 +12,11 @@ class User(Base):
     password_hashed = Column(String(255), nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-    products = relationship('Product', back_populates='seller')
+    products = relationship('Product', back_populates='seller')  # 用户发布的商品（作为卖家）
     reviews = relationship('Review', back_populates='user')
 
-    orders = relationship('Order', back_populates='buyer')  # 买家订单
-    sold_orders = relationship('Order', back_populates='seller')  # 卖家订单
+    orders = relationship('Order', back_populates='buyer')  # 用户作为买家的订单
+    sold_orders = relationship('Order', back_populates='seller')  # 用户作为卖家的订单
 
 
 class Product(Base):
@@ -59,7 +59,7 @@ class Order(Base):
     __tablename__ = 'orders'
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    buyer_id = Column(Integer, ForeignKey('users.id'))
+    buyer_id = Column(Integer, ForeignKey('users.id'))  # 买家 ID
     order_date = Column(DateTime, nullable=False)
     status = Column(Enum('pending', 'shipped', 'completed', 'canceled', name='order_status'), default='pending')
     total_amount = Column(DECIMAL(10, 2), nullable=False)
@@ -70,8 +70,8 @@ class Order(Base):
     address_line1 = Column(String(255), nullable=False)
     address_line2 = Column(String(255))  # 可选字段
 
-    buyer = relationship('User', back_populates='orders')  # 与买家（buyer）建立关系
-    seller = relationship('User', back_populates='sold_orders')  # 与卖家（seller）建立关系
+    buyer = relationship('User', back_populates='orders', overlaps="sold_orders")  # 买家
+    seller = relationship('User', back_populates='sold_orders', overlaps="orders")  # 卖家
 
 
 class SoldProduct(Base):

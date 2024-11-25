@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
-
+from datetime import datetime
 import models
 import schemas
 
@@ -122,3 +122,73 @@ def add_product_image(db: Session, product_id: int, image_url: str):
     db.commit()
     db.refresh(db_image)
     return db_image
+
+
+def create_order(db: Session, order_data: schemas.OrderCreate, buyer_id: int):
+    total_amount = 0
+
+    # 获取订单中的产品信息
+    for item in order_data.products:
+        product = db.query(models.Product).filter(models.Product.id == item.product_id).first()
+        if not product:
+            raise HTTPException(status_code=404, detail=f"产品 ID {item.product_id} 未找到")
+
+        # 检查库存是否足够
+        if product.stock < item.quantity:
+            raise HTTPException(status_code=400, detail=f"产品 ID {item.product_id} 库存不足")
+
+        total_amount += float(product.price) * item.quantity
+        product.stock -= item.quantity  # 更新库存
+
+    # 创建新订单
+    new_order = models.Order(
+        buyer_id=buyer_id,
+        order_date=datetime.utcnow(),
+        status='pending',
+        total_amount=total_amount,
+        recipient_name=order_data.receipt_info.recipient_name,
+        phone=order_data.receipt_info.phone,
+        address_line1=order_data.receipt_info.address_line1,
+        address_line2=order_data.receipt_info.address_line2
+    )
+
+    db.add(new_order)
+    db.flush()  # 提前获取 new_order 的 ID
+
+    # 记录已售出的产品
+    for item in order_data.products:
+        product = db.query(models.Product).filter(models.Product.id == item.product_id).first()
+        sold_product = models.SoldProduct(
+            seller_id=product.seller_id,
+            product_id=item.product_id,
+            order_id=new_order.id,
+            sold_date=datetime.utcnow(),
+            quantity=item.quantity
+        )
+        db.add(sold_product)
+
+    db.commit()
+    db.refresh(new_order)
+
+    return new_order
+
+
+def create_review(db: Session, review_data: schemas.ReviewCreate, user_id: int, product_id: int):
+    # 检查商品是否存在
+    product = db.query(models.Product).filter(models.Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="商品未找到")
+
+    # 创建新评论
+    new_review =models.Review(
+        user_id=user_id,
+        product_id=product_id,
+        content=review_data.content,
+        rating=review_data.rating
+    )
+
+    db.add(new_review)
+    db.commit()
+    db.refresh(new_review)
+
+    return new_review

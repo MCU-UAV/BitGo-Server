@@ -183,7 +183,7 @@ def create_review(db: Session, review_data: schemas.ReviewCreate, user_id: int, 
     new_review =models.Review(
         user_id=user_id,
         product_id=product_id,
-        content=review_data.content,
+        review=review_data.review,
         rating=review_data.rating
     )
 
@@ -192,3 +192,9 @@ def create_review(db: Session, review_data: schemas.ReviewCreate, user_id: int, 
     db.refresh(new_review)
 
     return new_review
+
+def get_reviews_by_product_id(db: Session, product_id: int):
+    """
+    根据 product_id 获取所有评论
+    """
+    return db.query(models.Review).filter(models.Review.product_id == product_id).all()

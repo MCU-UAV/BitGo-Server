@@ -15,8 +15,8 @@ class User(Base):
     products = relationship('Product', back_populates='seller')  # 用户发布的商品（作为卖家）
     reviews = relationship('Review', back_populates='user')
 
-    orders = relationship('Order', back_populates='buyer')  # 用户作为买家的订单
-    sold_orders = relationship('Order', back_populates='seller')  # 用户作为卖家的订单
+    orders = relationship('Order', back_populates='buyer', foreign_keys='Order.buyer_id', overlaps="sold_orders")
+    sold_orders = relationship('Order', back_populates='seller', foreign_keys='Order.seller_id', overlaps="orders")
 
 
 class Product(Base):
@@ -60,6 +60,7 @@ class Order(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     buyer_id = Column(Integer, ForeignKey('users.id'))  # 买家 ID
+    seller_id = Column(Integer, ForeignKey('users.id')) # 卖家 ID
     order_date = Column(DateTime, nullable=False)
     status = Column(Enum('pending', 'shipped', 'completed', 'canceled', name='order_status'), default='pending')
     total_amount = Column(DECIMAL(10, 2), nullable=False)
@@ -70,8 +71,8 @@ class Order(Base):
     address_line1 = Column(String(255), nullable=False)
     address_line2 = Column(String(255))  # 可选字段
 
-    buyer = relationship('User', back_populates='orders', overlaps="sold_orders")  # 买家
-    seller = relationship('User', back_populates='sold_orders', overlaps="orders")  # 卖家
+    buyer = relationship('User', back_populates='orders', foreign_keys=[buyer_id])
+    seller = relationship('User', back_populates='sold_orders', foreign_keys=[seller_id])
 
 
 class SoldProduct(Base):
@@ -96,8 +97,8 @@ class Review(Base):
     product_id = Column(Integer, ForeignKey('products.id'))
     user_id = Column(Integer, ForeignKey('users.id'))
     rating = Column(Integer, nullable=False)  # Assuming a rating scale of 1-5
-    comment = Column(Text)
-    review_date = Column(DateTime, default=datetime.datetime.utcnow)
+    review = Column(Text)
+    created_at  = Column(DateTime, default=datetime.datetime.utcnow)
 
     product = relationship('Product', back_populates='reviews')
     user = relationship('User', back_populates='reviews')

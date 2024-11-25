@@ -176,16 +176,16 @@ class OrderResponse(BaseModel):
         from_attributes = True
 
 class ReviewCreate(BaseModel):
-    content: str  # 评论内容
+    review: str  # 评论内容
     rating: int  # 评分
 
 class ReviewResponse(BaseModel):
     id: int
     user_id: int
     product_id: int
-    content: str
+    review: str
     rating: int
-    created_at: str
+    created_at: datetime
 
     class Config:
         from_attributes = True

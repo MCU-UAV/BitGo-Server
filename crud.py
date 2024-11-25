@@ -1,8 +1,9 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from datetime import datetime
 import models
+import random
 import schemas
 
 
@@ -63,12 +64,14 @@ def create_product(db: Session, product: schemas.ProductCreate):
 def get_product_by_id(db: Session, product_id: int):
     return db.query(models.Product).filter(models.Product.id == product_id).first()
 
+
 def get_product_images_by_product_id(db: Session, product_id: int):
     return db.query(models.ProductImage).filter(models.ProductImage.product_id == product_id).all()
 
 
 def get_products_by_seller(db: Session, seller_id: int):
     return db.query(models.Product).filter(models.Product.seller_id == seller_id).all()
+
 
 def get_category_name_by_id(db: Session, category_id: int):
     return db.query(models.Category).filter(models.Category.id == category_id).first()
@@ -180,7 +183,7 @@ def create_review(db: Session, review_data: schemas.ReviewCreate, user_id: int, 
         raise HTTPException(status_code=404, detail="商品未找到")
 
     # 创建新评论
-    new_review =models.Review(
+    new_review = models.Review(
         user_id=user_id,
         product_id=product_id,
         review=review_data.review,
@@ -193,8 +196,33 @@ def create_review(db: Session, review_data: schemas.ReviewCreate, user_id: int, 
 
     return new_review
 
+
 def get_reviews_by_product_id(db: Session, product_id: int):
     """
     根据 product_id 获取所有评论
     """
     return db.query(models.Review).filter(models.Review.product_id == product_id).all()
+
+
+def get_all_categories(db: Session):
+    """
+    获取所有分类的 ID 和名称
+    """
+    return db.query(models.Category.id, models.Category.name).all()
+
+
+def get_random_products_by_category(db: Session, category_id: int, limit: int = 5):
+    """
+    随机获取某分类下的商品以及多个图片信息
+    """
+    # 查询该分类下的所有商品，并且预加载商品图片信息
+    products = db.query(models.Product).filter(models.Product.category_id == category_id) \
+        .options(joinedload(models.Product.images)).all()
+
+    if not products:
+        return []  # 如果没有商品，返回空列表
+
+    # 随机选择商品
+    random_products = random.sample(products, min(len(products), limit))
+
+    return random_products

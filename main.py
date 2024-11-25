@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -23,7 +23,7 @@ app.add_middleware(
 
 
 # 注册新用户
-@app.post("/register/", response_model=schemas.User)
+@app.post("/register", response_model=schemas.User)
 def register(user: schemas.UserPost, db: Session = Depends(get_db)):
 	# 检查用户名是否已经存在
 	db_user = crud.get_user(db, username=user.username)
@@ -45,7 +45,8 @@ def register(user: schemas.UserPost, db: Session = Depends(get_db)):
 
 # 登录并获取 JWT token
 @app.post("/token", response_model=schemas.Token)
-def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends(),
+						   db: Session = Depends(get_db)):
 	user = auth.authenticate_user(db, form_data.username, form_data.password)
 	if not user:
 		raise HTTPException(
@@ -57,6 +58,7 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
 	access_token = auth.create_access_token(
 		data={"sub": user.username}, expires_delta=access_token_expires
 	)
+
 	return {"access_token": access_token, "token_type": "bearer"}
 
 
@@ -97,7 +99,7 @@ def read_product(product_id: int, db: Session = Depends(get_db)):
 
 
 # 获取商品图片
-@app.get("/products/{product_id}/image", response_model=List[schemas.ProductImage])
+@app.get("/product/{product_id}/images", response_model=List[schemas.ProductImage])
 def read_product(product_id: int, db: Session = Depends(get_db)):
 	product_images = crud.get_product_images_by_product_id(db, product_id)
 	if not product_images:
@@ -176,7 +178,28 @@ async def post_review(
 @app.get("/product/{product_id}/reviews", response_model=List[schemas.ReviewResponse])
 async def get_reviews(product_id: int, db: Session = Depends(get_db)):
 	"""
-	   获取某个商品的所有评论
-	   """
+       获取某个商品的所有评论
+       """
 	reviews = crud.get_reviews_by_product_id(db, product_id)
 	return reviews
+
+
+@app.get("/categories", response_model=List[schemas.Category])
+def get_categories(db: Session = Depends(get_db)):
+	"""
+    获取所有分类的 ID 和名称
+    """
+	categories = crud.get_all_categories(db)
+	# 转换为字典列表，以满足 Pydantic 的序列化需求
+	return [{"id": category[0], "name": category[1]} for category in categories]
+
+
+@app.get("/categories/{category_id}/products", response_model=List[schemas.Product])
+def get_random_products(category_id: int, limit: int = 5, db: Session = Depends(get_db)):
+	"""
+    随机获取某分类下的商品及其多个图片URL
+    """
+	products = crud.get_random_products_by_category(db, category_id, limit)
+	if not products:
+		raise HTTPException(status_code=404, detail="该分类下没有商品")
+	return products

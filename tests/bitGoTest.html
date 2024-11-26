@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>注册与登录测试</title>
-    <style>
-        body {
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>注册与登录测试</title>
+		<style>
+			body {
             font-family: Arial, sans-serif;
             margin: 20px;
             line-height: 1.6;
@@ -57,619 +57,826 @@
             border-radius: 4px;
         }
     </style>
-</head>
+	</head>
 
-<body>
-    <h1>用户注册与登录</h1>
+	<body>
+		<h1>用户注册与登录</h1>
 
-    <h2>注册</h2>
-    <input type="text" id="register-username" placeholder="用户名" required>
-    <input type="password" id="register-password" placeholder="密码" required>
-    <button onclick="register()">注册</button>
-	<div id="response_register"></div>
+		<h2>注册</h2>
+		<input type="text" id="register-username" placeholder="用户名" required>
+		<input type="password" id="register-password" placeholder="密码" required>
+		<button onclick="register()">注册</button>
+		<div id="response_register"></div>
 
-    <h2>登录</h2>
-    <input type="text" id="login-username" placeholder="用户名" required>
-    <input type="password" id="login-password" placeholder="密码" required>
-    <button onclick="login()">登录</button>
-	<div id="response_login"></div>
-	
-	<h2>测试授权访问</h2>
-    <button onclick="test_protected()">开始测试</button>
-	<div id="response_protected"></div>
-	
-    <h2>发布商品</h2>
-    <input type="text" id="product-name" placeholder="商品名称" required>
-    <input type="text" id="product-description" placeholder="商品描述" required>
-    <input type="number" id="product-price" placeholder="商品价格" required>
-    <input type="number" id="product-stock" placeholder="商品库存" required>
-    <input type="number" id="product-categoryId" placeholder="类目" required>
+		<h2>登录</h2>
+		<input type="text" id="login-username" placeholder="用户名" required>
+		<input type="password" id="login-password" placeholder="密码" required>
+		<button onclick="login()">登录</button>
+		<div id="response_login"></div>
 
-    <h3>商品图片链接</h3>
-    <div id="image-url-container">
-        <input type="text" class="product-imgurl" placeholder="商品图片链接" required>
-    </div>
-    <button onclick="addImageUrlInput()">添加链接</button>
+		<h2>测试授权访问</h2>
+		<button onclick="test_protected()">开始测试</button>
+		<div id="response_protected"></div>
 
-    <button onclick="publishProduct()">发布商品</button>
-	<div id="response_pub"></div>
+		<h2>发布商品</h2>
+		<input type="text" id="product-name" placeholder="商品名称" required>
+		<input type="text" id="product-description" placeholder="商品描述" required>
+		<input type="number" id="product-price" placeholder="商品价格" required>
+		<input type="number" id="product-stock" placeholder="商品库存" required>
+		<input type="number" id="product-categoryId" placeholder="类目" required>
 
-    <h2>浏览商品</h2>
-<input type="text" id="browse-product-id" placeholder="商品ID" required>
-<button onclick="viewProductDetails()">查看商品详情</button>
+		<h3>商品图片链接</h3>
+		<div id="image-url-container">
+			<input type="text" class="product-imgurl" placeholder="商品图片链接" required>
+		</div>
+		<button onclick="addImageUrlInput()">添加链接</button>
 
+		<button onclick="publishProduct()">发布商品</button>
+		<div id="response_pub"></div>
 
-<div id="product-details"></div> 
-<div id="response_browse"></div>
-
-	<h2>购买商品</h2>
-<div id="purchase_container">
-   
-</div>
-<button onclick="addProductIdInput()">添加商品</button>
-<!-- 购买者信息输入框 -->
-<h3>收货信息</h3>
-<div>
-    <label for="recipient_name">收货人姓名:</label>
-    <input type="text" id="recipient_name" value="李四" placeholder="收货人姓名" required>
-    
-    <label for="phone">电话:</label>
-    <input type="text" id="phone" value="1234567890" placeholder="电话" required>
-
-    <label for="address_line1">地址 (街道):</label>
-    <input type="text" id="address_line1" value="上海市浦东新区某街道" placeholder="地址 (街道)" required>
-    
-    <label for="address_line2">地址 (楼号):</label>
-    <input type="text" id="address_line2" value="2号楼201室" placeholder="地址 (楼号)" required>
-</div>
-
-<!-- 按钮 -->
-
-<button onclick="purchaseProduct()">确认购买</button>
-
-<!-- 响应区域 -->
-<div id="response_purchase"></div>
-
-<div>
-    <h3>商品评论</h3>
-    <!-- 输入商品 ID -->
-    <input type="number" id="product_id" placeholder="请输入商品 ID" required><br>
-
-    <textarea id="review_content" placeholder="写下您的评论..." rows="20" cols="50"></textarea><br>
-    <input type="number" id="review_rating" placeholder="评分（1-5）" min="1" max="5" required><br>
-    
-    <button onclick="submitReview()">提交评论</button>
-</div>
-<div id="response_review"></div>
-
-<h2>查看商品评论</h2>
-<!-- 商品ID输入框 -->
-<input type="text" id="review-product-id" placeholder="商品ID" required>
-<button onclick="viewProductreviews()">查看商品评论</button>
-
-<!-- 用于显示响应消息 -->
-<div id="review-response"></div>
-
-<!-- 用于显示评论列表 -->
-<div id="product-reviews">
-    <h3>商品评论:</h3>
-</div>
-
-<h2>查看分类下的商品</h2>
-<!-- 分类ID输入框 -->
-<input type="number" id="category-id" placeholder="请输入分类ID" required>
-<!-- 商品数量限制输入框 -->
-<input type="number" id="limit" placeholder="商品数量" value="5" min="1" required>
-<!-- 查看按钮 -->
-<button onclick="viewRandomProducts()">查看商品</button>
-
-<!-- 用于显示响应消息 -->
-<div id="response"></div>
-
-<!-- 用于显示商品列表 -->
-
-<div id="product-list">
-   
-</div>
+		<h2>浏览商品</h2>
+		<input type="text" id="browse-product-id" placeholder="商品ID" required>
+		<button onclick="viewProductDetails()">查看商品详情</button>
 
 
-    <script>
-        const baseUrl = "http://47.95.70.49:8888"; // 后端API基础URL
+		<div id="product-details"></div>
+		<div id="response_browse"></div>
 
-        async function register() {
-            const username = document.getElementById('register-username').value.trim();
-            const password = document.getElementById('register-password').value.trim();
+		<h2>购买商品</h2>
+		<div id="purchase_container">
 
-            try {
-                const response = await fetch(`${baseUrl}/register/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username, password }),
-                });
+		</div>
+		<button onclick="addProductIdInput()">添加商品</button>
+		<!-- 购买者信息输入框 -->
+		<h3>收货信息</h3>
+		<div>
+			<label for="recipient_name">收货人姓名:</label>
+			<input type="text" id="recipient_name" value="李四" placeholder="收货人姓名" required>
 
-                const data = await response.json();
-                if (response.ok) {
-                    document.getElementById('response_register').innerText = "注册成功！";
-                } else {
-                    document.getElementById('response_register').innerText = data.detail || "注册失败！";
-                }
-            } catch (error) {
-                document.getElementById('response_register').innerText = "注册失败，发生错误。";
-            }
-        }
+			<label for="phone">电话:</label>
+			<input type="text" id="phone" value="1234567890" placeholder="电话" required>
 
-        async function login() {
-            const username = document.getElementById('login-username').value.trim();
-            const password = document.getElementById('login-password').value.trim();
+			<label for="address_line1">地址 (街道):</label>
+			<input type="text" id="address_line1" value="上海市浦东新区某街道" placeholder="地址 (街道)" required>
 
-            try {
-                const response = await fetch(`${baseUrl}/token`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({ username, password })
-                });
+			<label for="address_line2">地址 (楼号):</label>
+			<input type="text" id="address_line2" value="2号楼201室" placeholder="地址 (楼号)" required>
+		</div>
 
-                if (response.ok) {
-                    const data = await response.json();
-                    localStorage.setItem('access_token', data.access_token);
+		<!-- 按钮 -->
 
-                    const userResponse = await fetch(`${baseUrl}/users/me`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${data.access_token}`,
-                        },
-                    });
+		<button onclick="purchaseProduct()">确认购买</button>
 
-                    const userData = await userResponse.json();
-                    localStorage.setItem('user_id', userData.user_id);
-                    document.getElementById('response_login').innerText = `登录成功！欢迎，${userData.username}`;
-                } else {
-                    document.getElementById('response_login').innerText = "登录失败，用户名或密码错误。";
-                }
-            } catch (error) {
-                document.getElementById('response_login').innerText = "登录失败，发生错误。";
-            }
-        }
-		
-		async function test_protected() {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-        document.getElementById('response_pub').innerText = "请先登录";
-        return;
+		<!-- 响应区域 -->
+		<div id="response_purchase"></div>
+		<h2>查看订单</h2>
+		<div id="orders-section">
+			<button onclick="fetchOrders('buyer_orders', 'buyer-orders', 'buyer-orders-list')">查看买家订单</button>
+			<button onclick="fetchOrders('seller_orders', 'seller-orders', 'seller-orders-list')">查看卖家订单</button>
+
+			<div id="buyer-orders" style="display: none;">
+				<h3>买家订单</h3>
+				<ul id="buyer-orders-list"></ul>
+			</div>
+
+			<div id="seller-orders" style="display: none;">
+				<h3>卖家订单</h3>
+				<ul id="seller-orders-list"></ul>
+			</div>
+
+			<div id="orders-error" style="color: red;"></div>
+		</div>
+
+		<!-- Modal -->
+		<div id="order-details-modal" class="modal">
+			<div class="modal-content">
+				<span class="close-btn" id="close-modal">&times;</span>
+				<h2>订单详情</h2>
+				<div id="order-details-content">
+					<!-- 订单详情内容将动态填充到这里 -->
+				</div>
+			</div>
+		</div>
+
+		<style>
+			/* 模态框背景 */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
     }
 
-    try {
-        // Fetch product details
-        const response = await fetch(`${baseUrl}/protected`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,  // Send the token for authentication
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error('请求失败');
-        }
-
-        // Assuming the response is in JSON format
-        const data = await response.json();
-        document.getElementById('response_protected').innerText = JSON.stringify(data, null, 2);
-    } catch (error) {
-        document.getElementById('response_protected').innerText = "未登录或请求失败";
-    }
-}
-
-
-        function addImageUrlInput() {
-            const container = document.getElementById('image-url-container');
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'product-imgurl';
-            input.placeholder = '商品图片链接';
-            input.style.marginTop = '5px';
-            container.appendChild(input);
-        }
-
-        async function publishProduct() {
-            const token = localStorage.getItem('access_token');
-            if (!token) {
-                document.getElementById('response_pub').innerText = "请先登录以发布商品。";
-                return;
-            }
-
-            const seller_id = localStorage.getItem('user_id');
-            const name = document.getElementById('product-name').value.trim();
-            const description = document.getElementById('product-description').value.trim();
-            const price = parseFloat(document.getElementById('product-price').value);
-            const stock = parseInt(document.getElementById('product-stock').value);
-            const category_id = parseInt(document.getElementById('product-categoryId').value);
-
-            const imageInputs = document.getElementsByClassName('product-imgurl');
-            const imageUrls = [];
-            for (let i = 0; i < imageInputs.length; i++) {
-                if (imageInputs[i].value.trim()) {
-                    imageUrls.push(imageInputs[i].value.trim());
-                }
-            }
-
-            try {
-                const response = await fetch(`${baseUrl}/product/create`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        name,
-                        description,
-                        price,
-                        stock,
-                        seller_id: parseInt(seller_id),
-                        category_id,
-                        image_urls: imageUrls
-                    }),
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    document.getElementById('response_pub').innerText = "商品发布成功！";
-                } else {
-                    document.getElementById('response_pub').innerText = data.detail || "商品发布失败！";
-                }
-            } catch (error) {
-                document.getElementById('response_pub').innerText = "商品发布失败，发生错误。";
-            }
-        }
-
-async function viewProductDetails() {
-    const productId = document.getElementById('browse-product-id').value.trim();
-
-    try {
-        // Fetch product details
-        const response = await fetch(`${baseUrl}/products/${productId}/detail`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (response.ok) {
-            const product = await response.json();
-            // Display product details
-            displayProductDetails(product);
-
-            // Fetch product images
-            const imagesResponse = await fetch(`${baseUrl}/product/${productId}/images`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (imagesResponse.ok) {
-                const images = await imagesResponse.json();
-                displayProductImages(images);
-            } else {
-                document.getElementById('response_browse').innerText = "商品图片未找到。";
-            }
-        } else {
-            document.getElementById('response_browse').innerText = "查看商品失败，商品未找到。";
-        }
-    } catch (error) {
-        document.getElementById('response_browse').innerText = "查看商品失败，发生错误。";
-    }
-}
-
-function displayProductDetails(product) {
-    const productDetails = document.getElementById('product-details');
-    productDetails.innerHTML = `
-        <div class="product">
-            <strong>商品名称: ${product.name}</strong><br>
-            商品描述: ${product.description}<br>
-            价格: ${product.price}元<br>
-            库存: ${product.stock}件<br>
-            商品ID: ${product.id}<br>
-            卖家ID: ${product.seller_id}<br>
-            类目ID: ${product.category_id}<br>
-        </div>
-    `;
-}
-
-function displayProductImages(images) {
-    const productDetails = document.getElementById('product-details');
-    const imageSection = document.createElement('div');
-    imageSection.innerHTML = '<h3>商品图片:</h3>';
-
-    images.forEach(image => {
-        const imgElement = document.createElement('img');
-        imgElement.src = image.image_url;
-        imgElement.alt = '商品图片';
-        imgElement.style.width = '200px';  // Optional: Set a fixed size for images
-        imgElement.style.margin = '5px';   // Optional: Add some spacing between images
-        imageSection.appendChild(imgElement);
-    });
-
-    productDetails.appendChild(imageSection);
-}
-
-      function addProductIdInput() {
-    const container = document.getElementById('purchase_container');
-
-    // 创建一个商品输入的容器
-    const productContainer = document.createElement('div');
-    productContainer.className = 'product-container';
-
-    // 创建商品ID输入框
-    const inputId = document.createElement('input');
-    inputId.type = 'text';
-    inputId.className = 'product-id';
-    inputId.placeholder = '商品ID';
-    inputId.style.marginTop = '5px';
-
-    // 创建购买数量输入框
-    const inputNum = document.createElement('input');
-    inputNum.type = 'number';
-    inputNum.className = 'product-num';
-    inputNum.placeholder = '购买数量';
-
-    // 将商品ID和数量输入框放入同一容器
-    productContainer.appendChild(inputId);
-    productContainer.appendChild(inputNum);
-
-    // 将商品容器添加到父容器中
-    container.appendChild(productContainer);
-}
-
-async function purchaseProduct() {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-        document.getElementById('response_purchase').innerText = "请先登录以购买。";
-        return;
+    /* 模态框内容 */
+    .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 10px;
     }
 
-    // 获取购买者信息
-    const recipient_name = document.getElementById('recipient_name').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const address_line1 = document.getElementById('address_line1').value.trim();
-    const address_line2 = document.getElementById('address_line2').value.trim();
-
-    // 检查收货信息是否完整
-    if (!recipient_name || !phone || !address_line1) {
-        document.getElementById('response_purchase').innerText = "请填写完整的收货信息。";
-        return;
+    /* 关闭按钮 */
+    .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
     }
 
-    const productContainers = document.getElementsByClassName('product-container');
-    const products = [];
-
-    // 遍历每个商品容器，获取商品ID和数量
-    for (let i = 0; i < productContainers.length; i++) {
-        const productIdInput = productContainers[i].getElementsByClassName('product-id')[0];
-        const productNumInput = productContainers[i].getElementsByClassName('product-num')[0];
-
-        const productId = productIdInput.value.trim();
-        const productNum = productNumInput.value.trim();
-
-        // 如果商品ID或数量为空，则跳过
-        if (!productId || !productNum) {
-            continue;
-        }
-
-        // 将商品ID和数量添加到数组
-        products.push({
-            product_id: productId,
-            quantity: parseInt(productNum, 10)
-        });
+    .close-btn:hover,
+    .close-btn:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
     }
 
-    // 如果没有有效的商品输入，给出提示
-    if (products.length === 0) {
-        document.getElementById('response_purchase').innerText = "请填写商品ID和数量。";
-        return;
+
+    #order-details-content {
+        margin-top: 20px;
     }
 
-    try {
-        const response = await fetch(`${baseUrl}/order/create`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-                products: products,  // 发送商品ID和数量的关联数据
-                receipt_info: {
-                    recipient_name: recipient_name,
-                    phone: phone,
-                    address_line1: address_line1,
-                    address_line2: address_line2
-                }
-            }),
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-            document.getElementById('response_purchase').innerText = "商品购买成功！";
-        } else {
-            document.getElementById('response_purchase').innerText = data.detail || "商品购买失败！";
-        }
-    } catch (error) {
-        document.getElementById('response_purchase').innerText = "商品购买失败，发生错误。";
-    }
-}
-
-async function submitReview() {
-    const token = localStorage.getItem('access_token');
-   
-    // 获取商品ID、评论内容和评分
-    const productId = document.getElementById('product_id').value;
-    const review = document.getElementById('review_content').value;
-    const rating = document.getElementById('review_rating').value;
-
-    // 检查用户是否填写了商品 ID
-    if (!productId) {
-	document.getElementById('response_review').innerText = "请输入商品 ID";
-        return;
+    .order-item {
+        margin-bottom: 15px;
     }
 
-    if (!review || !rating) {
-        alert("评论内容和评分不能为空");
-        return;
+    .order-item span {
+        font-weight: bold;
     }
+</style>
 
-    const response = await fetch(`${baseUrl}/product/${productId}/review`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ review, rating })
-    });
+		<div>
+			<h3>商品评论</h3>
+			<!-- 输入商品 ID -->
+			<input type="number" id="product_id" placeholder="请输入商品 ID" required>
+			<br>
 
-    if (response.ok) {
-        const review = await response.json();
-        document.getElementById('response_review').innerText ='评论提交成功';
-        
-    } else {
-        document.getElementById('response_review').innerText =response;
-    }
-}
+			<textarea id="review_content" placeholder="写下您的评论..." rows="20" cols="50"></textarea>
+			<br>
+			<input type="number" id="review_rating" placeholder="评分（1-5）" min="1" max="5" required>
+			<br>
 
-	async function viewProductreviews() {
-    const productId = document.getElementById('review-product-id').value.trim();
+			<button onclick="submitReview()">提交评论</button>
+		</div>
+		<div id="response_review"></div>
 
-    try {
-        // 获取评论信息
-        const response = await fetch(`${baseUrl}/product/${productId}/reviews`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+		<h2>查看商品评论</h2>
+		<!-- 商品ID输入框 -->
+		<input type="text" id="review-product-id" placeholder="商品ID" required>
+		<button onclick="viewProductreviews()">查看商品评论</button>
 
-        if (response.ok) {
-            const reviews = await response.json();
-            displayProductreviews(reviews);
-        } else {
-            document.getElementById('review-response').innerText = "获取评论失败，商品或评论未找到。";
-        }
-    } catch (error) {
-        document.getElementById('review-response').innerText = "获取评论失败，发生错误。";
-    }
-}
+		<!-- 用于显示响应消息 -->
+		<div id="review-response"></div>
 
-function displayProductreviews(reviews) {
-    const reviewsSection = document.getElementById('product-reviews');
-    reviewsSection.innerHTML = '<h3>商品评论:</h3>'; // 清空旧评论并添加标题
+		<!-- 用于显示评论列表 -->
+		<div id="product-reviews">
+			<h3>商品评论:</h3>
+		</div>
 
-    if (reviews.length === 0) {
-        reviewsSection.innerHTML += "<p>暂无评论。</p>";
-        return;
-    }
+		<h2>查看分类下的商品</h2>
+		<!-- 分类ID输入框 -->
+		<input type="number" id="category-id" placeholder="请输入分类ID" required>
+		<!-- 商品数量限制输入框 -->
+		<input type="number" id="limit" placeholder="商品数量" value="5" min="1" required>
+		<!-- 查看按钮 -->
+		<button onclick="viewRandomProducts()">查看商品</button>
 
-    // 动态生成评论列表
-    reviews.forEach(review => {
-        const reviewDiv = document.createElement('div');
-        reviewDiv.className = 'review';
-        reviewDiv.style.border = '1px solid #ccc';
-        reviewDiv.style.padding = '10px';
-        reviewDiv.style.margin = '5px 0';
+		<!-- 用于显示响应消息 -->
+		<div id="response"></div>
 
-        reviewDiv.innerHTML = `
-            <p><strong>评论人:</strong> ${review.user_id}</p>
-            <p><strong>评分:</strong> ${review.rating} / 5</p>
-            <p><strong>评论内容:</strong> ${review.review}</p>
-            <p><small>评论时间: ${new Date(review.created_at).toLocaleString()}</small></p>
-        `;
+		<!-- 用于显示商品列表 -->
 
-        reviewsSection.appendChild(reviewDiv);
-    });
-}
+		<div id="product-list">
 
-async function viewRandomProducts() {
-    const categoryId = document.getElementById('category-id').value.trim();
-    const limit = document.getElementById('limit').value.trim();
-
-    if (!categoryId || !limit) {
-        document.getElementById('response').innerText = "请输入有效的分类ID和商品数量限制。";
-        return;
-    }
-
-    try {
-        // 获取分类下的商品
-        const response = await fetch(`${baseUrl}/categories/${categoryId}/products?limit=${limit}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (response.ok) {
-            const products = await response.json();
-            await displayProductsWithImages(products);
-        } else {
-            document.getElementById('response').innerText = "该分类下没有商品。";
-        }
-    } catch (error) {
-        document.getElementById('response').innerText = "获取商品失败，发生错误。";
-    }
-}
-
-// 处理商品及其图片展示
-async function displayProductsWithImages(products) {
-    const responseContainer = document.getElementById('response');
-    responseContainer.innerHTML = ''; // 清空原有响应
-
-    // 遍历商品并获取每个商品的图片
-    for (const product of products) {
-        const productId = product.id;
-        try {
-            const imageResponse = await fetch(`${baseUrl}/product/${productId}/images`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (imageResponse.ok) {
-                const images = await imageResponse.json();
-                displayProduct(product, images);
-            } else {
-                responseContainer.innerHTML += `<p>商品ID: ${productId} 无法获取图片。</p>`;
-            }
-        } catch (error) {
-            responseContainer.innerHTML += `<p>商品ID: ${productId} 获取图片失败，发生错误。</p>`;
-        }
-    }
-}
-
-function displayProduct(product, images) {
-    const responseContainer = document.getElementById('response');
-    const productHtml = `
-        <div class="product">
-            <strong>商品名称: ${product.name}</strong><br>
-            商品描述: ${product.description}<br>
-            价格: ${product.price}元<br>
-            库存: ${product.stock}件<br>
-            商品ID: ${product.id}<br>
-            卖家ID: ${product.seller_id}<br>
-            类目ID: ${product.category_id}<br>
-       
-            <div>
-                ${images.map(image => `<img src="${image.image_url}" alt="商品图片" width="100">`).join('')}
-            </div>
-        </div>
-    `;
-    responseContainer.innerHTML += productHtml;
-}
+		</div>
 
 
- 
-    </script>
-</body>
+		<script>
+			        const baseUrl = "http://47.95.70.49:8888"; // 后端API基础URL
+<!--			        const baseUrl = "http://10.63.174.182:8888";-->
+
+			        async function register() {
+			            const username = document.getElementById('register-username').value.trim();
+			            const password = document.getElementById('register-password').value.trim();
+
+			            try {
+			                const response = await fetch(`${baseUrl}/register/`, {
+			                    method: 'POST',
+			                    headers: {
+			                        'Content-Type': 'application/json',
+			                    },
+			                    body: JSON.stringify({ username, password }),
+			                });
+
+			                const data = await response.json();
+			                if (response.ok) {
+			                    document.getElementById('response_register').innerText = "注册成功！";
+			                } else {
+			                    document.getElementById('response_register').innerText = data.detail || "注册失败！";
+			                }
+			            } catch (error) {
+			                document.getElementById('response_register').innerText = "注册失败，发生错误。";
+			            }
+			        }
+
+			        async function login() {
+			            const username = document.getElementById('login-username').value.trim();
+			            const password = document.getElementById('login-password').value.trim();
+
+			            try {
+			                const response = await fetch(`${baseUrl}/token`, {
+			                    method: 'POST',
+			                    headers: {
+			                        'Content-Type': 'application/x-www-form-urlencoded',
+			                    },
+			                    body: new URLSearchParams({ username, password })
+			                });
+
+			                if (response.ok) {
+			                    const data = await response.json();
+			                    localStorage.setItem('access_token', data.access_token);
+
+			                    const userResponse = await fetch(`${baseUrl}/users/me`, {
+			                        method: 'GET',
+			                        headers: {
+			                            'Authorization': `Bearer ${data.access_token}`,
+			                        },
+			                    });
+
+			                    const userData = await userResponse.json();
+			                    localStorage.setItem('user_id', userData.user_id);
+			                    document.getElementById('response_login').innerText = `登录成功！欢迎，${userData.username}`;
+			                } else {
+			                    document.getElementById('response_login').innerText = "登录失败，用户名或密码错误。";
+			                }
+			            } catch (error) {
+			                document.getElementById('response_login').innerText = "登录失败，发生错误。";
+			            }
+			        }
+
+					async function test_protected() {
+			    const token = localStorage.getItem('access_token');
+			    if (!token) {
+			        document.getElementById('response_pub').innerText = "请先登录";
+			        return;
+			    }
+
+			    try {
+			        // Fetch product details
+			        const response = await fetch(`${baseUrl}/protected`, {
+			            method: 'GET',
+			            headers: {
+			                'Content-Type': 'application/json',
+			                'Authorization': `Bearer ${token}`,  // Send the token for authentication
+			            },
+			        });
+
+			        if (!response.ok) {
+			            throw new Error('请求失败');
+			        }
+
+			        // Assuming the response is in JSON format
+			        const data = await response.json();
+			        document.getElementById('response_protected').innerText = JSON.stringify(data, null, 2);
+			    } catch (error) {
+			        document.getElementById('response_protected').innerText = "未登录或请求失败";
+			    }
+			}
+
+
+			        function addImageUrlInput() {
+			            const container = document.getElementById('image-url-container');
+			            const input = document.createElement('input');
+			            input.type = 'text';
+			            input.className = 'product-imgurl';
+			            input.placeholder = '商品图片链接';
+			            input.style.marginTop = '5px';
+			            container.appendChild(input);
+			        }
+
+			        async function publishProduct() {
+			            const token = localStorage.getItem('access_token');
+			            if (!token) {
+			                document.getElementById('response_pub').innerText = "请先登录以发布商品。";
+			                return;
+			            }
+
+			            const seller_id = localStorage.getItem('user_id');
+			            const name = document.getElementById('product-name').value.trim();
+			            const description = document.getElementById('product-description').value.trim();
+			            const price = parseFloat(document.getElementById('product-price').value);
+			            const stock = parseInt(document.getElementById('product-stock').value);
+			            const category_id = parseInt(document.getElementById('product-categoryId').value);
+
+			            const imageInputs = document.getElementsByClassName('product-imgurl');
+			            const imageUrls = [];
+			            for (let i = 0; i < imageInputs.length; i++) {
+			                if (imageInputs[i].value.trim()) {
+			                    imageUrls.push(imageInputs[i].value.trim());
+			                }
+			            }
+
+			            try {
+			                const response = await fetch(`${baseUrl}/product/create`, {
+			                    method: 'POST',
+			                    headers: {
+			                        'Content-Type': 'application/json',
+			                        'Authorization': `Bearer ${token}`,
+			                    },
+			                    body: JSON.stringify({
+			                        name,
+			                        description,
+			                        price,
+			                        stock,
+			                        seller_id: parseInt(seller_id),
+			                        category_id,
+			                        image_urls: imageUrls
+			                    }),
+			                });
+
+			                const data = await response.json();
+			                if (response.ok) {
+			                    document.getElementById('response_pub').innerText = "商品发布成功！";
+			                } else {
+			                    document.getElementById('response_pub').innerText = data.detail || "商品发布失败！";
+			                }
+			            } catch (error) {
+			                document.getElementById('response_pub').innerText = "商品发布失败，发生错误。";
+			            }
+			        }
+
+			async function viewProductDetails() {
+			    const productId = document.getElementById('browse-product-id').value.trim();
+
+			    try {
+			        // Fetch product details
+			        const response = await fetch(`${baseUrl}/products/${productId}/detail`, {
+			            method: 'GET',
+			            headers: {
+			                'Content-Type': 'application/json',
+			            },
+			        });
+
+			        if (response.ok) {
+			            const product = await response.json();
+			            // Display product details
+			            displayProductDetails(product);
+
+			            // Fetch product images
+			            const imagesResponse = await fetch(`${baseUrl}/product/${productId}/images`, {
+			                method: 'GET',
+			                headers: {
+			                    'Content-Type': 'application/json',
+			                },
+			            });
+
+			            if (imagesResponse.ok) {
+			                const images = await imagesResponse.json();
+			                displayProductImages(images);
+			            } else {
+			                document.getElementById('response_browse').innerText = "商品图片未找到。";
+			            }
+			        } else {
+			            document.getElementById('response_browse').innerText = "查看商品失败，商品未找到。";
+			        }
+			    } catch (error) {
+			        document.getElementById('response_browse').innerText = "查看商品失败，发生错误。";
+			    }
+			}
+
+			function displayProductDetails(product) {
+			    const productDetails = document.getElementById('product-details');
+			    productDetails.innerHTML = `
+			        <div class="product">
+			            <strong>商品名称: ${product.name}</strong><br>
+			            商品描述: ${product.description}<br>
+			            价格: ${product.price}元<br>
+			            库存: ${product.stock}件<br>
+			            商品ID: ${product.id}<br>
+			            卖家ID: ${product.seller_id}<br>
+			            类目ID: ${product.category_id}<br>
+			        </div>
+			    `;
+			}
+
+			function displayProductImages(images) {
+			    const productDetails = document.getElementById('product-details');
+			    const imageSection = document.createElement('div');
+			    imageSection.innerHTML = '<h3>商品图片:</h3>';
+
+			    images.forEach(image => {
+			        const imgElement = document.createElement('img');
+			        imgElement.src = image.image_url;
+			        imgElement.alt = '商品图片';
+			        imgElement.style.width = '200px';  // Optional: Set a fixed size for images
+			        imgElement.style.margin = '5px';   // Optional: Add some spacing between images
+			        imageSection.appendChild(imgElement);
+			    });
+
+			    productDetails.appendChild(imageSection);
+			}
+
+			      function addProductIdInput() {
+			    const container = document.getElementById('purchase_container');
+
+			    // 创建一个商品输入的容器
+			    const productContainer = document.createElement('div');
+			    productContainer.className = 'product-container';
+
+			    // 创建商品ID输入框
+			    const inputId = document.createElement('input');
+			    inputId.type = 'text';
+			    inputId.className = 'product-id';
+			    inputId.placeholder = '商品ID';
+			    inputId.style.marginTop = '5px';
+
+			    // 创建购买数量输入框
+			    const inputNum = document.createElement('input');
+			    inputNum.type = 'number';
+			    inputNum.className = 'product-num';
+			    inputNum.placeholder = '购买数量';
+
+			    // 将商品ID和数量输入框放入同一容器
+			    productContainer.appendChild(inputId);
+			    productContainer.appendChild(inputNum);
+
+			    // 将商品容器添加到父容器中
+			    container.appendChild(productContainer);
+			}
+
+			async function purchaseProduct() {
+			    const token = localStorage.getItem('access_token');
+			    if (!token) {
+			        document.getElementById('response_purchase').innerText = "请先登录以购买。";
+			        return;
+			    }
+
+			    // 获取购买者信息
+			    const recipient_name = document.getElementById('recipient_name').value.trim();
+			    const phone = document.getElementById('phone').value.trim();
+			    const address_line1 = document.getElementById('address_line1').value.trim();
+			    const address_line2 = document.getElementById('address_line2').value.trim();
+
+			    // 检查收货信息是否完整
+			    if (!recipient_name || !phone || !address_line1) {
+			        document.getElementById('response_purchase').innerText = "请填写完整的收货信息。";
+			        return;
+			    }
+
+			    const productContainers = document.getElementsByClassName('product-container');
+			    const products = [];
+
+			    // 遍历每个商品容器，获取商品ID和数量
+			    for (let i = 0; i < productContainers.length; i++) {
+			        const productIdInput = productContainers[i].getElementsByClassName('product-id')[0];
+			        const productNumInput = productContainers[i].getElementsByClassName('product-num')[0];
+
+			        const productId = productIdInput.value.trim();
+			        const productNum = productNumInput.value.trim();
+
+			        // 如果商品ID或数量为空，则跳过
+			        if (!productId || !productNum) {
+			            continue;
+			        }
+
+			        // 将商品ID和数量添加到数组
+			        products.push({
+			            product_id: productId,
+			            quantity: parseInt(productNum, 10)
+			        });
+			    }
+
+			    // 如果没有有效的商品输入，给出提示
+			    if (products.length === 0) {
+			        document.getElementById('response_purchase').innerText = "请填写商品ID和数量。";
+			        return;
+			    }
+
+			    try {
+			        const response = await fetch(`${baseUrl}/order/create`, {
+			            method: 'POST',
+			            headers: {
+			                'Content-Type': 'application/json',
+			                'Authorization': `Bearer ${token}`,
+			            },
+			            body: JSON.stringify({
+			                products: products,  // 发送商品ID和数量的关联数据
+			                receipt_info: {
+			                    recipient_name: recipient_name,
+			                    phone: phone,
+			                    address_line1: address_line1,
+			                    address_line2: address_line2
+			                }
+			            }),
+			        });
+
+			        const data = await response.json();
+			        if (response.ok) {
+			            document.getElementById('response_purchase').innerText = "商品购买成功！";
+			        } else {
+			            document.getElementById('response_purchase').innerText = data.detail || "商品购买失败！";
+			        }
+			    } catch (error) {
+			        document.getElementById('response_purchase').innerText = "商品购买失败，发生错误。";
+			    }
+			}
+
+			async function fetchOrders(orderType, sectionId, listId) {
+			    const ordersError = document.getElementById("orders-error");
+			    const section = document.getElementById(sectionId);
+			    const list = document.getElementById(listId);
+
+			    ordersError.innerText = ""; // 清空错误信息
+			    list.innerHTML = ""; // 清空列表
+			    section.style.display = "none"; // 隐藏列表
+
+			    try {
+			        const response = await fetch(`${baseUrl}/user/orders`, {
+			            method: "GET",
+			            headers: {
+			                "Content-Type": "application/json",
+			                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+			            },
+			        });
+
+			        if (response.ok) {
+			            const orders = await response.json();
+			             if (orders[orderType] && orders[orderType].length > 0) {
+			                orders[orderType].forEach((orderId) => {
+			                    const listItem = document.createElement("li");
+			                    listItem.innerHTML = `订单ID: ${orderId}
+			                        <button onclick="fetchOrderDetails(${orderId}, '${orderType}')">查看详情</button>`;
+			                    list.appendChild(listItem);
+			                });
+			                section.style.display = "block"; // 显示列表
+			            } else {
+			                ordersError.innerText = `没有找到相关的${orderType === "buyer_orders" ? "买家" : "卖家"}订单。`;
+			            }
+			        } else {
+			            const errorData = await response.json();
+			            ordersError.innerText = errorData.detail || "获取订单失败。";
+			        }
+			    } catch (error) {
+			        ordersError.innerText = "请求失败，请检查网络连接。";
+			    }
+			}
+
+			// 获取订单详情
+			// 获取订单详情
+			async function fetchOrderDetails(orderId, orderType) {
+			    const ordersError = document.getElementById("orders-error");
+			    const modal = document.getElementById("order-details-modal");
+			    const modalContent = document.getElementById("order-details-content");
+
+			    try {
+			        const response = await fetch(`${baseUrl}/orders/${orderId}`, {
+			            method: "GET",
+			            headers: {
+			                "Content-Type": "application/json",
+			                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+			            },
+			        });
+
+			        if (response.ok) {
+			            const orderDetails = await response.json();
+
+			            // 清空之前的订单内容
+			            modalContent.innerHTML = "";
+
+			            // 构建订单基本信息
+			            const orderInfoDiv = document.createElement("div");
+			            orderInfoDiv.classList.add("order-item");
+			            orderInfoDiv.innerHTML = `
+			                <span>订单ID:</span> ${orderDetails.id}<br>
+			                <span>买家ID:</span> ${orderDetails.buyer_id}<br>
+			                <span>订单日期:</span> ${orderDetails.order_date}<br>
+			                <span>状态:</span> ${orderDetails.status}<br>
+			                <span>总金额:</span> ￥${orderDetails.total_amount}<br>
+			                <span>收件人:</span> ${orderDetails.recipient_name}<br>
+			                <span>电话:</span> ${orderDetails.phone}<br>
+			                <span>地址:</span> ${orderDetails.address_line1} ${orderDetails.address_line2}
+			            `;
+			            modalContent.appendChild(orderInfoDiv);
+
+			            // 构建商品信息
+			            const productsInfoDiv = document.createElement("div");
+			            productsInfoDiv.classList.add("order-item");
+			            productsInfoDiv.innerHTML = "<h3>商品列表</h3>";
+
+			            orderDetails.products.forEach(product => {
+			                const productDiv = document.createElement("div");
+			                productDiv.classList.add("order-item");
+			                productDiv.innerHTML = `
+			                    <span>商品ID:</span> ${product.product_id}<br>
+			                    <span>数量:</span> ${product.quantity}<br>
+			                    <span>销售日期:</span> ${product.sold_date}<br>
+			                    <span>卖家ID:</span> ${product.seller_id}<br>
+			                `;
+			                productsInfoDiv.appendChild(productDiv);
+			            });
+
+			            modalContent.appendChild(productsInfoDiv);
+
+			            // 显示模态框
+			            modal.style.display = "block";
+			        } else {
+			            const errorData = await response.json();
+			            ordersError.innerText = `获取订单 ${orderId} 的详情失败: ${errorData.detail}`;
+			        }
+			    } catch (error) {
+			        ordersError.innerText = `请求订单 ${orderId} 的详情失败，请检查网络连接。`;
+			    }
+			}
+
+			// 关闭模态框
+			document.getElementById("close-modal").onclick = function () {
+			    const modal = document.getElementById("order-details-modal");
+			    modal.style.display = "none";
+			}
+
+			// 点击页面空白区域时关闭模态框
+			window.onclick = function (event) {
+			    const modal = document.getElementById("order-details-modal");
+			    if (event.target === modal) {
+			        modal.style.display = "none";
+			    }
+			}
+
+
+
+			async function submitReview() {
+			    const token = localStorage.getItem('access_token');
+
+			    // 获取商品ID、评论内容和评分
+			    const productId = document.getElementById('product_id').value;
+			    const review = document.getElementById('review_content').value;
+			    const rating = document.getElementById('review_rating').value;
+
+			    // 检查用户是否填写了商品 ID
+			    if (!productId) {
+				document.getElementById('response_review').innerText = "请输入商品 ID";
+			        return;
+			    }
+
+			    if (!review || !rating) {
+			        alert("评论内容和评分不能为空");
+			        return;
+			    }
+
+			    const response = await fetch(`${baseUrl}/product/${productId}/review`, {
+			        method: 'POST',
+			        headers: {
+			            'Content-Type': 'application/json',
+			            'Authorization': `Bearer ${token}`,
+			        },
+			        body: JSON.stringify({ review, rating })
+			    });
+
+			    if (response.ok) {
+			        const review = await response.json();
+			        document.getElementById('response_review').innerText ='评论提交成功';
+
+			    } else {
+			        document.getElementById('response_review').innerText =response;
+			    }
+			}
+
+				async function viewProductreviews() {
+			    const productId = document.getElementById('review-product-id').value.trim();
+
+			    try {
+			        // 获取评论信息
+			        const response = await fetch(`${baseUrl}/product/${productId}/reviews`, {
+			            method: 'GET',
+			            headers: {
+			                'Content-Type': 'application/json',
+			            },
+			        });
+
+			        if (response.ok) {
+			            const reviews = await response.json();
+			            displayProductreviews(reviews);
+			        } else {
+			            document.getElementById('review-response').innerText = "获取评论失败，商品或评论未找到。";
+			        }
+			    } catch (error) {
+			        document.getElementById('review-response').innerText = "获取评论失败，发生错误。";
+			    }
+			}
+
+			function displayProductreviews(reviews) {
+			    const reviewsSection = document.getElementById('product-reviews');
+			    reviewsSection.innerHTML = '<h3>商品评论:</h3>'; // 清空旧评论并添加标题
+
+			    if (reviews.length === 0) {
+			        reviewsSection.innerHTML += "<p>暂无评论。</p>";
+			        return;
+			    }
+
+			    // 动态生成评论列表
+			    reviews.forEach(review => {
+			        const reviewDiv = document.createElement('div');
+			        reviewDiv.className = 'review';
+			        reviewDiv.style.border = '1px solid #ccc';
+			        reviewDiv.style.padding = '10px';
+			        reviewDiv.style.margin = '5px 0';
+
+			        reviewDiv.innerHTML = `
+			            <p><strong>评论人:</strong> ${review.user_id}</p>
+			            <p><strong>评分:</strong> ${review.rating} / 5</p>
+			            <p><strong>评论内容:</strong> ${review.review}</p>
+			            <p><small>评论时间: ${new Date(review.created_at).toLocaleString()}</small></p>
+			        `;
+
+			        reviewsSection.appendChild(reviewDiv);
+			    });
+			}
+
+			async function viewRandomProducts() {
+			    const categoryId = document.getElementById('category-id').value.trim();
+			    const limit = document.getElementById('limit').value.trim();
+
+			    if (!categoryId || !limit) {
+			        document.getElementById('response').innerText = "请输入有效的分类ID和商品数量限制。";
+			        return;
+			    }
+
+			    try {
+			        // 获取分类下的商品
+			        const response = await fetch(`${baseUrl}/categories/${categoryId}/products?limit=${limit}`, {
+			            method: 'GET',
+			            headers: {
+			                'Content-Type': 'application/json',
+			            },
+			        });
+
+			        if (response.ok) {
+			            const products = await response.json();
+			            await displayProductsWithImages(products);
+			        } else {
+			            document.getElementById('response').innerText = "该分类下没有商品。";
+			        }
+			    } catch (error) {
+			        document.getElementById('response').innerText = "获取商品失败，发生错误。";
+			    }
+			}
+
+			// 处理商品及其图片展示
+			async function displayProductsWithImages(products) {
+			    const responseContainer = document.getElementById('response');
+			    responseContainer.innerHTML = ''; // 清空原有响应
+
+			    // 遍历商品并获取每个商品的图片
+			    for (const product of products) {
+			        const productId = product.id;
+			        try {
+			            const imageResponse = await fetch(`${baseUrl}/product/${productId}/images`, {
+			                method: 'GET',
+			                headers: {
+			                    'Content-Type': 'application/json',
+			                },
+			            });
+
+			            if (imageResponse.ok) {
+			                const images = await imageResponse.json();
+			                displayProduct(product, images);
+			            } else {
+			                responseContainer.innerHTML += `<p>商品ID: ${productId} 无法获取图片。</p>`;
+			            }
+			        } catch (error) {
+			            responseContainer.innerHTML += `<p>商品ID: ${productId} 获取图片失败，发生错误。</p>`;
+			        }
+			    }
+			}
+
+			function displayProduct(product, images) {
+			    const responseContainer = document.getElementById('response');
+			    const productHtml = `
+			        <div class="product">
+			            <strong>商品名称: ${product.name}</strong><br>
+			            商品描述: ${product.description}<br>
+			            价格: ${product.price}元<br>
+			            库存: ${product.stock}件<br>
+			            商品ID: ${product.id}<br>
+			            卖家ID: ${product.seller_id}<br>
+			            类目ID: ${product.category_id}<br>
+
+			            <div>
+			                ${images.map(image => `<img src="${image.image_url}" alt="商品图片" width="100">`).join('')}
+			            </div>
+			        </div>
+			    `;
+			    responseContainer.innerHTML += productHtml;
+			}
+		</script>
+	</body>
 
 </html>

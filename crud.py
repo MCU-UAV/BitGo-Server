@@ -175,6 +175,59 @@ def create_order(db: Session, order_data: schemas.OrderCreate, buyer_id: int):
 
     return new_order
 
+def get_order_details(db: Session, order_id: int):
+    """
+    获取指定订单的详细信息，包括订单的基本信息和产品详情
+    """
+    order = db.query(models.Order).filter(models.Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail=f"订单 ID {order_id} 未找到")
+
+    # 获取订单中的已售出产品
+    sold_products = db.query(models.SoldProduct).filter(models.SoldProduct.order_id == order_id).all()
+
+    # 构造返回的订单详情
+    return {
+        "id": order.id,
+        "buyer_id": order.buyer_id,
+        "order_date": order.order_date,
+        "status": order.status,
+        "total_amount": order.total_amount,
+        "recipient_name": order.recipient_name,
+        "phone": order.phone,
+        "address_line1": order.address_line1,
+        "address_line2": order.address_line2,
+        "products": [
+            {
+                "product_id": sold.product_id,
+                "quantity": sold.quantity,
+                "sold_date": sold.sold_date,
+                "seller_id": sold.seller_id,
+            }
+            for sold in sold_products
+        ]
+    }
+
+
+def get_user_orders(db: Session, user_id: int):
+    """
+    获取用户作为买家和卖家的订单号
+    :param db: 数据库会话
+    :param user_id: 用户ID
+    :return: 包含买家和卖家订单号的字典
+    """
+    # 查询作为买家的订单号
+    buyer_orders = db.query(models.Order.id).filter(models.Order.buyer_id == user_id).all()
+    # 查询作为卖家的订单号
+    seller_orders = db.query(models.Order.id).filter(models.Order.seller_id == user_id).all()
+
+    # 将结果整理为简单的列表格式
+    result = {
+        "buyer_orders": [order.id for order in buyer_orders],
+        "seller_orders": [order.id for order in seller_orders]
+    }
+    return result
+
 
 def create_review(db: Session, review_data: schemas.ReviewCreate, user_id: int, product_id: int):
     # 检查商品是否存在

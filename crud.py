@@ -209,6 +209,14 @@ def get_order_details(db: Session, order_id: int):
     }
 
 
+def get_products_by_seller(db: Session, seller_id: int, limit: int = 10):
+    """
+    获取卖家发布的商品列表
+    """
+    products = db.query(models.Product).filter(models.Product.seller_id == seller_id).limit(limit).all()
+
+    return products
+
 def get_user_orders(db: Session, user_id: int):
     """
     获取用户作为买家和卖家的订单号

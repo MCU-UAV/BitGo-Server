@@ -174,6 +174,19 @@ async def read_order_details(order_id: int, db: Session = Depends(get_db)):
     order_details = crud.get_order_details(db, order_id)
     return order_details
 
+#获取该用户发布的商品
+@app.get("/products/seller")
+async def get_products_for_seller(current_user: schemas.User = Depends(auth.get_current_user), db: Session = Depends(get_db)):
+    """
+    获取某卖家发布的商品列表
+    """
+    products = crud.get_products_by_seller(db, current_user.id)
+
+    if not products:
+        raise HTTPException(status_code=404, detail="没有找到该卖家的商品")
+
+    return products
+
 # 对某一商品进行评论
 @app.post("/product/{product_id}/review", response_model=schemas.ReviewResponse)
 async def post_review(

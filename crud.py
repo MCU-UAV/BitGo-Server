@@ -209,13 +209,29 @@ def get_order_details(db: Session, order_id: int):
     }
 
 
-def get_products_by_seller(db: Session, seller_id: int, limit: int = 10):
+def get_products_by_seller(db: Session, seller_id: int):
     """
-    获取卖家发布的商品列表
+    获取卖家发布的商品列表及对应的图片URL
     """
-    products = db.query(models.Product).filter(models.Product.seller_id == seller_id).limit(limit).all()
+    products = db.query(models.Product).filter(models.Product.seller_id == seller_id).all()
 
-    return products
+    # 返回商品的详细信息，包括每件商品的图片URL
+    result = []
+    for product in products:
+        product_data = {
+            "id": product.id,
+            "name": product.name,
+            "description": product.description,
+            "price": product.price,
+            "stock": product.stock,
+            "seller_id": product.seller_id,
+            "category_id": product.category_id,
+            "image_urls": [image.image_url for image in product.images]  # 获取商品的所有图片URL
+        }
+        result.append(product_data)
+
+    return result
+
 
 def get_user_orders(db: Session, user_id: int):
     """

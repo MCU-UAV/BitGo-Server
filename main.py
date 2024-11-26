@@ -91,8 +91,8 @@ def create_new_product(product: schemas.ProductCreate, db: Session = Depends(get
 
 # 获取商品详情
 @app.get("/products/{product_id}/detail", response_model=schemas.Product)
-def read_product(product_id: int, db: Session = Depends(get_db)):
-    product = crud.get_product_by_id(db, product_id)
+def get_seller_product(product_id: int, db: Session = Depends(get_db)):
+    product = crud.get_products_by_seller(db, product_id)
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return product

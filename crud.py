@@ -5,6 +5,7 @@ from datetime import datetime
 import models
 import random
 import schemas
+from sqlalchemy import or_
 
 
 # 用户相关操作
@@ -293,8 +294,7 @@ def get_random_products_by_category(db: Session, category_id: int, limit: int = 
     随机获取某分类下的商品以及多个图片信息
     """
     # 查询该分类下的所有商品，并且预加载商品图片信息
-    products = db.query(models.Product).filter(models.Product.category_id == category_id) \
-        .options(joinedload(models.Product.images)).all()
+    products = db.query(models.Product).filter(models.Product.category_id == category_id).all()
 
     if not products:
         return []  # 如果没有商品，返回空列表
@@ -302,4 +302,79 @@ def get_random_products_by_category(db: Session, category_id: int, limit: int = 
     # 随机选择商品
     random_products = random.sample(products, min(len(products), limit))
 
-    return random_products
+    # 构造结果数据
+    result = []
+    for product in random_products:
+        product_data = {
+            "id": product.id,
+            "name": product.name,
+            "description": product.description,
+            "price": float(product.price),
+            "stock": product.stock,
+            "seller_id": product.seller_id,
+            "category_id": product.category_id,
+            "image_urls": [image.image_url for image in product.images]  # 获取图片 URL
+        }
+        result.append(product_data)
+
+    return result
+
+def get_random_products(db: Session, limit: int = 5):
+    """
+    随机返回数个商品及其图片信息
+    """
+    # 查询所有商品
+    all_products = db.query(models.Product).all()
+
+    if not all_products:
+        return []  # 如果没有商品，返回空列表
+
+    # 从所有商品中随机选取
+    random_products = random.sample(all_products, min(len(all_products), limit))
+
+    # 构造结果数据
+    result = []
+    for product in random_products:
+        product_data = {
+            "id": product.id,
+            "name": product.name,
+            "description": product.description,
+            "price": float(product.price),
+            "stock": product.stock,
+            "seller_id": product.seller_id,
+            "category_id": product.category_id,
+            "image_urls": [image.image_url for image in product.images]  # 获取图片 URL
+        }
+        result.append(product_data)
+
+    return result
+
+def search_products(db: Session, keyword: str, limit: int = 10):
+    """
+    模糊查找商品
+    """
+    query = db.query(models.Product).filter(
+        or_(
+            models.Product.name.ilike(f"%{keyword}%"),  # 商品名称包含关键字
+            models.Product.description.ilike(f"%{keyword}%")  # 商品描述包含关键字
+        )
+    ).limit(limit)
+
+    products = query.all()
+
+    # 构造返回数据，包括商品图片
+    result = []
+    for product in products:
+        product_data = {
+            "id": product.id,
+            "name": product.name,
+            "description": product.description,
+            "price": float(product.price),
+            "stock": product.stock,
+            "seller_id": product.seller_id,
+            "category_id": product.category_id,
+            "image_urls": [image.image_url for image in product.images]  # 获取图片 URL
+        }
+        result.append(product_data)
+
+    return result

@@ -75,7 +75,7 @@ async def read_protected_data(current_user: schemas.User = Depends(auth.get_curr
 
 
 @app.post("/product/create")
-def create_new_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
+async def create_new_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
     try:
         # 调用 CRUD 函数创建产品
         db_product = crud.create_product(db, product)
@@ -91,7 +91,7 @@ def create_new_product(product: schemas.ProductCreate, db: Session = Depends(get
 
 # 获取商品详情
 @app.get("/products/{product_id}/detail", response_model=schemas.Product)
-def get_seller_product(product_id: int, db: Session = Depends(get_db)):
+async def get_seller_product(product_id: int, db: Session = Depends(get_db)):
     product = crud.get_products_by_seller(db, product_id)
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -100,7 +100,7 @@ def get_seller_product(product_id: int, db: Session = Depends(get_db)):
 
 # 获取商品图片
 @app.get("/product/{product_id}/images", response_model=List[schemas.ProductImage])
-def read_product(product_id: int, db: Session = Depends(get_db)):
+async def read_product(product_id: int, db: Session = Depends(get_db)):
     product_images = crud.get_product_images_by_product_id(db, product_id)
     if not product_images:
         raise HTTPException(status_code=404, detail="Product images not found")
@@ -218,7 +218,7 @@ async def get_reviews(product_id: int, db: Session = Depends(get_db)):
 
 # 获取所有分类ID和分类名
 @app.get("/categories", response_model=List[schemas.Category])
-def get_categories(db: Session = Depends(get_db)):
+async def get_categories(db: Session = Depends(get_db)):
     """
     获取所有分类的 ID 和名称
     """
@@ -227,12 +227,38 @@ def get_categories(db: Session = Depends(get_db)):
     return [{"id": category[0], "name": category[1]} for category in categories]
 
 
-@app.get("/categories/{category_id}/products", response_model=List[schemas.Product])
-def get_random_products(category_id: int, limit: int = 5, db: Session = Depends(get_db)):
+@app.get("/categories/{category_id}/products")
+async def get_random_products(category_id: int, limit: int = 5, db: Session = Depends(get_db)):
     """
     随机获取某分类下的商品及其多个图片URL
     """
     products = crud.get_random_products_by_category(db, category_id, limit)
     if not products:
         raise HTTPException(status_code=404, detail="该分类下没有商品")
+    return products
+
+
+@app.get("/products/random")
+async def random_products(limit: int = 5, db: Session = Depends(get_db)):
+    """
+    随机返回数个商品及其图片信息
+    """
+    products = crud.get_random_products(db, limit=limit)
+    if not products:
+        raise HTTPException(status_code=404, detail="没有商品可供随机返回")
+
+    return products
+
+@app.get("/products/search")
+async def search(keyword: str, limit: int = 10, db: Session = Depends(get_db)):
+    """
+    按关键字模糊查找商品
+    """
+    if not keyword:
+        raise HTTPException(status_code=400, detail="关键字不能为空")
+
+    products = crud.search_products(db, keyword=keyword, limit=limit)
+    if not products:
+        raise HTTPException(status_code=404, detail="未找到相关商品")
+
     return products

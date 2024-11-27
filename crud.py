@@ -5,7 +5,7 @@ from datetime import datetime
 import models
 import random
 import schemas
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 
 # 用户相关操作
@@ -293,19 +293,22 @@ def get_random_products_by_category(db: Session, category_id: int, limit: int = 
     """
     随机获取某分类下的商品以及多个图片信息
     """
-    # 查询该分类下的所有商品，并且预加载商品图片信息
-    products = db.query(models.Product).filter(models.Product.category_id == category_id).all()
+    # 查询该分类下的商品，并预加载商品图片信息
+    products_query = db.query(models.Product).filter(models.Product.category_id == category_id).options(
+        joinedload(models.Product.images)
+    )
 
-    if not products:
+    # 获取商品总数
+    total_products = products_query.count()
+    if total_products == 0:
         return []  # 如果没有商品，返回空列表
 
-    # 随机选择商品
-    random_products = random.sample(products, min(len(products), limit))
+    # 随机选择商品（通过数据库实现随机排序，避免全部加载到内存）
+    random_products = products_query.order_by(func.random()).limit(limit).all()
 
     # 构造结果数据
-    result = []
-    for product in random_products:
-        product_data = {
+    result = [
+        {
             "id": product.id,
             "name": product.name,
             "description": product.description,
@@ -313,29 +316,32 @@ def get_random_products_by_category(db: Session, category_id: int, limit: int = 
             "stock": product.stock,
             "seller_id": product.seller_id,
             "category_id": product.category_id,
-            "image_urls": [image.image_url for image in product.images]  # 获取图片 URL
+            "image_urls": [image.image_url for image in product.images],  # 获取图片 URL
         }
-        result.append(product_data)
+        for product in random_products
+    ]
 
     return result
+
 
 def get_random_products(db: Session, limit: int = 5):
     """
     随机返回数个商品及其图片信息
     """
-    # 查询所有商品
-    all_products = db.query(models.Product).all()
+    # 查询所有商品，并预加载商品图片信息
+    products_query = db.query(models.Product).options(joinedload(models.Product.images))
 
-    if not all_products:
+    # 获取商品总数
+    total_products = products_query.count()
+    if total_products == 0:
         return []  # 如果没有商品，返回空列表
 
-    # 从所有商品中随机选取
-    random_products = random.sample(all_products, min(len(all_products), limit))
+    # 随机选择商品（通过数据库实现随机排序，避免加载所有商品到内存）
+    random_products = products_query.order_by(func.random()).limit(limit).all()
 
     # 构造结果数据
-    result = []
-    for product in random_products:
-        product_data = {
+    result = [
+        {
             "id": product.id,
             "name": product.name,
             "description": product.description,
@@ -343,9 +349,10 @@ def get_random_products(db: Session, limit: int = 5):
             "stock": product.stock,
             "seller_id": product.seller_id,
             "category_id": product.category_id,
-            "image_urls": [image.image_url for image in product.images]  # 获取图片 URL
+            "image_urls": [image.image_url for image in product.images],  # 获取图片 URL
         }
-        result.append(product_data)
+        for product in random_products
+    ]
 
     return result
 

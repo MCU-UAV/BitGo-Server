@@ -90,9 +90,9 @@ async def create_new_product(product: schemas.ProductCreate, db: Session = Depen
 
 
 # 获取商品详情
-@app.get("/products/{product_id}/detail", response_model=schemas.Product)
+@app.get("/products/{product_id}/detail")
 async def get_seller_product(product_id: int, db: Session = Depends(get_db)):
-    product = crud.get_products_by_seller(db, product_id)
+    product = crud.get_product_by_id(db, product_id)
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
@@ -130,6 +130,7 @@ async def create_order(
         # 构建订单响应模型
         order_response = schemas.OrderResponse(
             id=new_order.id,
+
             buyer_id=new_order.buyer_id,
             order_date=new_order.order_date.isoformat(),  # 格式化日期为 ISO 8601 字符串
             status=new_order.status,
@@ -156,7 +157,16 @@ async def create_order(
         # 捕获其他异常并返回通用错误信息
         raise HTTPException(status_code=500, detail=f"订单创建失败: {str(e)}")
 
-
+@app.post("/orders/{order_id}/status", response_model=schemas.Order)
+def change_order_status(order_id: int, status_update: schemas.OrderStatusUpdate, db: Session = Depends(get_db)):
+    """
+    修改订单状态
+    :param order_id: 订单 ID
+    :param status_update: 包含新的状态信息
+    :param db: 数据库会话
+    :return: 更新后的订单信息
+    """
+    return crud.update_order_status(db, order_id, status_update.status)
 # 得到用户的所有订单
 @app.get("/user/orders")
 async def read_user_orders(current_user: schemas.User = Depends(auth.get_current_user), db: Session = Depends(get_db)):

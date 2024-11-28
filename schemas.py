@@ -56,6 +56,8 @@ class OrderStatusEnum(str, Enum):
     completed = 'completed'
     canceled = 'canceled'
 
+class OrderStatusUpdate(BaseModel):
+    status: str
 
 # 订单创建模型
 class OrderCreate(BaseModel):
